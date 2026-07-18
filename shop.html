@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Kanini Haraka Enterprises</title>
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+    <style>
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* NAVBAR */
+        nav { background-color: #ffffff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 24px; font-weight: 700; color: #b92b27; }
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: #333; font-weight: 500; font-size: 16px; }
+        .nav-links a:hover { color: #b92b27; }
+
+        /* CART BUTTON */
+        .cart-btn { background: transparent; border: none; font-size: 22px; cursor: pointer; color: #333; margin-left: 20px; position: relative; display: flex; align-items: center; }
+        .cart-btn span { background: #b92b27; color: white; font-size: 12px; border-radius: 50%; padding: 2px 6px; position: absolute; top: -8px; right: -12px; }
+
+        /* SHOP HEADER & SEARCH */
+        .shop-header { background: white; padding: 30px 0 20px; margin-bottom: 30px; border-bottom: 1px solid #ddd; }
+        .shop-header h1 { font-size: 32px; color: #333; font-weight: 600; }
+        .shop-header p { color: #888; margin-top: 5px; }
+        .search-container { margin-top: 15px; display: flex; gap: 10px; max-width: 500px; }
+        .search-container input { flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; outline: none; }
+        .search-container input:focus { border-color: #b92b27; }
+        .search-container button { background: #b92b27; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        /* CATEGORY HEADER */
+        .category-header { font-size: 22px; font-weight: 700; color: #b92b27; margin: 30px 0 15px; border-bottom: 2px solid #b92b27; padding-bottom: 5px; display: inline-block; }
+
+        /* PRODUCT GRID */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; padding-bottom: 50px; }
+
+        /* PRODUCT CARD */
+        .product-card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); transform: translateY(-3px); }
+        .product-img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 10px; background: #fafafa; border-radius: 4px; }
+        .product-title { font-size: 14px; color: #333; font-weight: 500; margin-bottom: 5px; min-height: 40px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* PRICING */
+        .price-wrapper { margin: 10px 0; }
+        .current-price { color: #b92b27; font-weight: 700; font-size: 18px; display: block; }
+
+        /* QUANTITY & BUTTONS */
+        .product-actions { margin-top: 10px; border-top: 1px solid #eee; padding-top: 12px; }
+        .qty-controls { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px; }
+        .qty-btn { background: #f1f1f1; border: none; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 18px; color: #333; }
+        .qty-btn:hover { background: #ddd; }
+        .qty-display { font-weight: 600; font-size: 16px; min-width: 20px; text-align: center; }
+
+        .btn-group { display: flex; gap: 10px; }
+        .btn-action { flex: 1; padding: 10px 0; border: none; border-radius: 4px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none; }
+        .btn-add-cart { background: #ffebeb; color: #b92b27; }
+        .btn-add-cart:hover { background: #fcdada; }
+        .btn-order-now { background: #b92b27; color: white; }
+        .btn-order-now:hover { background: #a02020; }
+
+        /* FOOTER */
+        footer { background-color: #333333; color: #ccc; text-align: center; padding: 30px 20px; margin-top: 50px; }
+        footer p { font-size: 14px; margin-bottom: 10px; }
+        .footer-links a { color: #4da6ff; text-decoration: none; margin: 0 8px; font-size: 14px; }
+        .footer-links a:hover { text-decoration: underline; }
+
+        /* CART MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 500px; max-height: 85vh; border-radius: 12px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .modal-header h2 { color: #b92b27; font-size: 24px; margin: 0; }
+        .modal-close { background: none; border: none; font-size: 28px; cursor: pointer; color: #888; line-height: 1; }
+        .modal-close:hover { color: #b92b27; }
+        .cart-items { flex: 1; overflow-y: auto; max-height: 50vh; margin-bottom: 15px; }
+        .cart-empty { text-align: center; color: #888; padding: 40px 0; font-size: 16px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f1f1; }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 600; color: #333; font-size: 15px; }
+        .cart-item-price { color: #b92b27; font-weight: bold; font-size: 14px; }
+        .cart-item-controls { display: flex; align-items: center; gap: 12px; }
+        .qty-btn-modal { background: #f1f1f1; border: none; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .qty-btn-modal:hover { background: #ddd; }
+        .qty-display-modal { font-weight: bold; width: 20px; text-align: center; }
+        .item-total { min-width: 60px; text-align: right; font-weight: 600; color: #333; }
+        .remove-item { color: #dc3545; cursor: pointer; font-size: 18px; margin-left: 8px; }
+        .cart-footer { border-top: 2px solid #eee; padding-top: 15px; }
+        .cart-total-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        .cart-total-row span:last-child { color: #b92b27; }
+        .btn-order-whatsapp { width: 100%; background: #25D366; color: white; border: none; padding: 14px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; }
+        .btn-order-whatsapp:hover { background: #1ebe57; }
+
+        @media (max-width: 768px) {
+            .nav-links { gap: 15px; }
+            .nav-links a { font-size: 14px; }
+            .cart-btn { margin-left: 10px; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+            .product-card { padding: 10px; }
+            .product-img { height: 120px; }
+            .btn-group { flex-direction: column; }
+            .modal-content { width: 95%; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo">Kanini Haraka</div>
+        <div style="display: flex; align-items: center;">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About Us</a></li>
+                <li><a href="index.html#branches">Branches</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+            <button class="cart-btn" onclick="openCart()">
+                🛒 <span id="cart-count">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SHOP HEADER -->
+    <div class="shop-header container">
+        <h1>Shop All Products</h1>
+        <p>Browse our wide selection of quality products</p>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for items... (e.g. Sugar, Oil, Rice)" onkeyup="filterProducts()">
+            <button onclick="filterProducts()">Search</button>
+        </div>
+    </div>
+
+    <!-- PRODUCT GRID -->
+    <div class="container" id="productContainer">
+        <!-- Products will be generated by JavaScript -->
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Kanini Haraka Enterprises Ltd. All Rights Reserved.</p>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Data Policy</a> | <a href="#">Data Deletion</a>
+        </div>
+    </footer>
+
+    <!-- CART MODAL -->
+    <div id="cartModal" class="modal-overlay" onclick="if(event.target===this) closeCart()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Your Cart</h2>
+                <button class="modal-close" onclick="closeCart()">×</button>
+            </div>
+            <div id="cartItemsContainer" class="cart-items">
+                <div id="emptyCartMsg" class="cart-empty">Your cart is empty.</div>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total-row">
+                    <span>Total:</span>
+                    <span id="cartTotalPrice">KSh 0.00</span>
+                </div>
+                <button id="orderWhatsAppBtn" class="btn-order-whatsapp" onclick="orderViaWhatsApp()">Order via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =================== COMPLETE PRODUCT DATABASE ===================
+        const products = [
+            // --- SUGAR ---
+            { id: 1, name: "Brown Sugar 50kg", category: "Sugar", img: "brown.webp", price: 5400 },
+            { id: 2, name: "White Sugar 50kg", category: "Sugar", img: "white50kg.webp", price: 5500 },
+            { id: 3, name: "Brown Sugar 25kg", category: "Sugar", img: "brown1.webp", price: 2700 },
+            { id: 4, name: "White Sugar 25kg", category: "Sugar", img: "white50kg.webp", price: 2750 },
+            { id: 5, name: "Sugar 1kg (Bale 20pcs)", category: "Sugar", img: "sugar1kg.webp", price: 2600 },
+            { id: 6, name: "Sugar 2kg (Bale 10pcs)", category: "Sugar", img: "sugar2kg.webp", price: 2600 },
+            { id: 7, name: "Nutrameal Sugar 5kg", category: "Sugar", img: "nutrameal.webp", price: 3500 },
+
+            // --- COOKING OIL ---
+            { id: 8, name: "Golden Drop Oil 20L", category: "Cooking Oil", img: "goldendrop20l.webp", price: 3800 },
+            { id: 9, name: "Golden Drop Oil 10L", category: "Cooking Oil", img: "goldendrop10l.webp", price: 1900 },
+            { id: 10, name: "Fresh Fry Oil 20L", category: "Cooking Oil", img: "freshfry20l.webp", price: 4000 },
+            { id: 11, name: "Fresh Fry Oil 10L", category: "Cooking Oil", img: "freshfry10l.webp", price: 2000 },
+            { id: 12, name: "Halisi Oil 20L", category: "Cooking Oil", img: "halisi10l.webp", price: 3000 },
+            { id: 13, name: "Halisi Oil 10L", category: "Cooking Oil", img: "halisi10l.webp", price: 1500 },
+            { id: 14, name: "Postman Oil 20L", category: "Cooking Oil", img: "postman20l.webp", price: 3600 },
+            { id: 15, name: "Postman Oil 10L", category: "Cooking Oil", img: "postman20l.webp", price: 1800 },
+            { id: 16, name: "Salit Oil 20L", category: "Cooking Oil", img: "salit20.webp", price: 3800 },
+            { id: 17, name: "Salit Oil 10L", category: "Cooking Oil", img: "salit10.webp", price: 1900 },
+            { id: 18, name: "Rina Oil 20L", category: "Cooking Oil", img: "rina20.webp", price: 3500 },
+            { id: 19, name: "Rina Oil 10L", category: "Cooking Oil", img: "rina10.webp", price: 1750 },
+            { id: 20, name: "Nyota Oil 20L", category: "Cooking Oil", img: "nyota20.webp", price: 3000 },
+            { id: 21, name: "Nyota Oil 10L", category: "Cooking Oil", img: "nyota10.webp", price: 1500 },
+
+            // --- MAIZE FLOUR ---
+            { id: 22, name: "Harvest Umati Flour 2kg", category: "Maize Flour", img: "stock.webp", price: 1550 },
+            { id: 23, name: "Harvest Umati Flour 1kg", category: "Maize Flour", img: "stock.webp", price: 1400 },
+            { id: 24, name: "Raha Premium Flour 2kg", category: "Maize Flour", img: "raha2kg.webp", price: 1700 },
+            { id: 25, name: "Raha Premium Flour 1kg", category: "Maize Flour", img: "raha1kg.webp", price: 1750 },
+            { id: 26, name: "Pembe Flour 2kg", category: "Maize Flour", img: "stock.webp", price: 1600 },
+            { id: 27, name: "Pembe Flour 1kg", category: "Maize Flour", img: "stock.webp", price: 1550 },
+            { id: 28, name: "Soko Flour 2kg", category: "Maize Flour", img: "soko2kgmaize.webp", price: 1600 },
+            { id: 29, name: "Soko Flour 1kg", category: "Maize Flour", img: "sokomaize.webp", price: 1550 },
+            { id: 30, name: "Dola Gold Flour 2kg", category: "Maize Flour", img: "dola-maize-2kg.webp", price: 1600 },
+            { id: 31, name: "Dola Gold Flour 1kg", category: "Maize Flour", img: "dolamaize.webp", price: 1500 },
+            { id: 32, name: "Dola Premium Flour 2kg", category: "Maize Flour", img: "dolapremium.webp", price: 1600 },
+            { id: 33, name: "Dola Premium Flour 1kg", category: "Maize Flour", img: "dolapremium.webp", price: 1550 },
+            { id: 34, name: "Ajab Flour 2kg", category: "Maize Flour", img: "ajab2kgmaize.webp", price: 1600 },
+            { id: 35, name: "Ajab Flour 1kg", category: "Maize Flour", img: "ajabmaize1kg.webp", price: 1550 },
+
+            // --- CHAPATI FLOUR ---
+            { id: 36, name: "Ajab Chapati Flour 2kg", category: "Chapati Flour", img: "ajabngano2kg.webp", price: 1800 },
+            { id: 37, name: "Ajab Chapati Flour 1kg", category: "Chapati Flour", img: "ajabngano1kg.webp", price: 1750 },
+            { id: 38, name: "Ajab Chapati Flour 500g", category: "Chapati Flour", img: "ajabngano500.webp", price: 1350 },
+            { id: 39, name: "Ndovu Chapati Flour 2kg", category: "Chapati Flour", img: "ndovu2kg.webp", price: 1800 },
+            { id: 40, name: "Ndovu Chapati Flour 1kg", category: "Chapati Flour", img: "ndovu1kg.webp", price: 1750 },
+            { id: 41, name: "Pembe Chapati Flour 2kg", category: "Chapati Flour", img: "pembe2kg.webp", price: 1800 },
+            { id: 42, name: "Pembe Chapati Flour 1kg", category: "Chapati Flour", img: "pembe1kgg.webp", price: 1750 },
+            { id: 43, name: "Lotus Chapati Flour 2kg", category: "Chapati Flour", img: "lotus2.webp", price: 1600 },
+            { id: 44, name: "Lotus Chapati Flour 1kg", category: "Chapati Flour", img: "lotus1.webp", price: 1500 },
+            { id: 45, name: "Umoja Chapati Flour 2kg", category: "Chapati Flour", img: "umoja2kg.webp", price: 1650 },
+            { id: 46, name: "Umoja Chapati Flour 1kg", category: "Chapati Flour", img: "umoja.webp", price: 1500 },
+            { id: 47, name: "210 Flour 2kg", category: "Chapati Flour", img: "210.webp", price: 1700 },
+
+            // --- RICE ---
+            { id: 48, name: "Biriyani Rice 25kg", category: "Rice", img: "biriani25kg.webp", price: 2100 },
+            { id: 49, name: "Ajab Rice 25kg", category: "Rice", img: "ajabrice.webp", price: 2300 },
+            { id: 50, name: "Basmati White Rice 25kg", category: "Rice", img: "basmatiwhite.webp", price: 2800 },
+            { id: 51, name: "Pishori Rice 25kg", category: "Rice", img: "pishori.webp", price: 4000 },
+            { id: 52, name: "Tajira Basmati Brown 25kg", category: "Rice", img: "basmati.webp", price: 2800 },
+            { id: 53, name: "Raval Basmati Brown 25kg", category: "Rice", img: "basmati.webp", price: 2900 },
+            { id: 54, name: "Sharbati Brown Rice 25kg", category: "Rice", img: "basmati25kg.webp", price: 2400 },
+            { id: 55, name: "Ajab Biriyani Rice 25kg", category: "Rice", img: "ajabrice.webp", price: 2200 },
+            { id: 56, name: "Basmati White (Standard) 25kg", category: "Rice", img: "basmatiwhite1.webp", price: 2700 },
+
+            // --- PULSES ---
+            { id: 57, name: "Maruti Green Grams 1kg (Bale 24pcs)", category: "Pulses", img: "maruti.webp", price: 4300 },
+            { id: 58, name: "Maruti Green Grams 500g (Bale 48pcs)", category: "Pulses", img: "ndengu.webp", price: 4350 },
+            { id: 59, name: "Maruti Green Grams 250g (Bale 48pcs)", category: "Pulses", img: "ndengu.webp", price: 2175 },
+
+            // --- JUICES & DRINKS ---
+            { id: 60, name: "Afya Juice 500ml", category: "Juices", img: "afya500.webp", price: 420 },
+            { id: 61, name: "Afya Juice 300ml", category: "Juices", img: "afya300.webp", price: 360 },
+            { id: 62, name: "Minute Maid 1L", category: "Juices", img: "minutemaid1l.webp", price: 100 },
+            { id: 63, name: "Minute Maid 400ml", category: "Juices", img: "minute400.webp", price: 600 },
+            { id: 64, name: "Minute Maid  400ml", category: "Juices", img: "minute400apple.webp", price: 60 },
+            { id: 65, name: "Red Bull 24 Pack", category: "Juices", img: "redbull.webp", price: 2400 },
+            { id: 66, name: "Azam Energy 300ml (24 Pack)", category: "Juices", img: "azam.webp", price: 860 },
+            { id: 67, name: "Predator 400ml (12pcs)", category: "Juices", img: "predator.webp", price: 510 },
+            { id: 68, name: "Power Play 500ml (12pcs)", category: "Juices", img: "play.webp", price: 500 },
+            
+            // --- SPREADS & POWDER ---
+            { id: 69, name: "Milk Powder 25kg", category: "Powder", img: "powdermil.webp", price: 7800 },
+            { id: 70, name: "Blueband Spread 100g (Outer)", category: "Spreads", img: "blueband1.webp", price: 480 },
+            { id: 71, name: "Blueband Spread 250g (Outer)", category: "Spreads", img: "blueband.webp", price: 1680 },
+
+            // --- SALT ---
+            { id: 72, name: "Kensalt 200g (Bale)", category: "Salt", img: "kensalt.webp", price: 330 },
+            { id: 73, name: "Kensalt 500g", category: "Salt", img: "kensalt.webp", price: 280 },
+            { id: 74, name: "Kensalt 1kg", category: "Salt", img: "kensalt1kg.webp", price: 250 },
+            { id: 75, name: "Kensalt 2kg", category: "Salt", img: "kensalt2kg.webp", price: 255 },
+
+            // --- ARIMIS (PERFUME/OIL) ---
+            { id: 76, name: "Arimis 50 Outer", category: "Arimis", img: "arimis50ml.webp", price: 800 },
+            { id: 77, name: "Arimis 90 Outer", category: "Arimis", img: "arimis90ml.webp", price: 600 },
+            { id: 78, name: "Arimis 200 Outer", category: "Arimis", img: "arimis200g.webp", price: 960 },
+            { id: 79, name: "Arimis 50 Box", category: "Arimis", img: "arimis50g.webp", price: 1200 },
+            { id: 80, name: "Arimis 25 Box", category: "Arimis", img: "arimis25ml.webp", price: 250 },
+            { id: 81, name: "Arimis 90 Box", category: "Arimis", img: "arimis90ml.webp", price: 1300 },
+            { id: 82, name: "Arimis 200 Box", category: "Arimis", img: "arimis.webp", price: 1600 },
+
+            // --- TEA LEAVES ---
+            { id: 83, name: "Fahari Tea 15g (48pcs)", category: "Tea", img: "fahari.webp", price: 240 },
+            { id: 84, name: "Fahari Tea 50g (Dozen)", category: "Tea", img: "fahari.webp", price: 240 },
+            { id: 85, name: "Fahari Tea 100g (Dozen)", category: "Tea", img: "fahari.webp", price: 360 },
+            { id: 86, name: "Melvin's Tea 15g Outer", category: "Tea", img: "melvins.webp", price: 350 },
+            { id: 87, name: "Melvin's Tea 50g Outer", category: "Tea", img: "melvins.webp", price: 480 },
+            { id: 88, name: "Melvin's Tea 100g Outer", category: "Tea", img: "melvins.webp", price: 1650 },
+            
+            // --- PURE ASIS TEA ---
+            { id: 89, name: "Pure Asis Tea Parcel (15g)", category: "Pure Asis Tea", img: "asispure.webp", price: 80 },
+            { id: 90, name: "Pure Asis Tea (25g)", category: "Pure Asis Tea", img: "asispure.webp", price: 120 },
+            { id: 91, name: "Pure Asis Tea (50g)", category: "Pure Asis Tea", img: "asispure.webp", price: 150 },
+            { id: 92, name: "Pure Asis Tea (100g)", category: "Pure Asis Tea", img: "asispure.webp", price: 270 },
+            { id: 93, name: "Pure Asis Tea (250g)", category: "Pure Asis Tea", img: "asispure.webp", price: 350 },
+            { id: 94, name: "Pure Asis Tea (500g)", category: "Pure Asis Tea", img: "asis500.webp", price: 550 },
+            
+            // --- TANGAWIZI ASIS TEA ---
+            { id: 95, name: "Tangawizi Asis Tea (15g)", category: "Tangawizi Tea", img: "asistangawizi.webp", price: 90 },
+            { id: 96, name: "Tangawizi Asis Tea (50g)", category: "Tangawizi Tea", img: "asistangawizi.webp", price: 150 },
+            { id: 97, name: "Tangawizi Asis Tea (100g)", category: "Tangawizi Tea", img: "asistangawizi.webp", price: 300 },
+            { id: 98, name: "Tangawizi Asis Tea (250g)", category: "Tangawizi Tea", img: "asistangawizi.webp", price: 350 },
+
+            // --- CHOCOLATE ---
+            { id: 99, name: "Raha Drinking Chocolate 20g", category: "Chocolate", img: "chocolate.webp", price: 140 },
+            { id: 100, name: "Raha Drinking Chocolate 10g", category: "Chocolate", img: "chocolate.webp", price: 190 },
+
+            // --- MILK ---
+            { id: 101, name: "Mt Kenya Milk 500ml (18pcs)", category: "Milk", img: "mtkenya500.webp", price: 520 },
+            { id: 102, name: "Mt Kenya Milk 200ml (21pcs)", category: "Milk", img: "mtkenya200.webp", price: 500 },
+            { id: 103, name: "Brookside Milk 500ml (12pcs)", category: "Milk", img: "brookside500.webp", price: 540 },
+            { id: 104, name: "Brookside Milk 200ml (21pcs)", category: "Milk", img: "brookside200.webp", price: 500 },
+            { id: 105, name: "Dodla Milk 500ml (12pcs)", category: "Milk", img: "dodla.webp", price: 500 },
+
+            // --- SOAP ---
+            { id: 106, name: "Zenta Bar Soap (10x1kg)", category: "Soap", img: "zenta.webp", price: 780 },
+            { id: 107, name: "Zenta Bar Soap (12x800g)", category: "Soap", img: "zenta.webp", price: 780 },
+            { id: 108, name: "Menengai Soap (20x1kg)", category: "Soap", img: "menengai.webp", price: 2700 },
+            { id: 109, name: "Kibuyu Bar Soap (20x1kg)", category: "Soap", img: "kibuyu.webp", price: 750 },
+            { id: 110, name: "Ndume Bar Soap (10x1kg)", category: "Soap", img: "ndume.webp", price: 1100 },
+            { id: 111, name: "Msafi Bar Soap (10x1kg)", category: "Soap", img: "msafi.webp", price: 1650 },
+            { id: 112, name: "Meta Bar Soap (10x1kg)", category: "Soap", img: "meta.webp", price: 1000 },
+
+            // --- DETERGENT ---
+            { id: 113, name: "Doffi Detergent 10kg", category: "Detergent", img: "doffi.webp", price: 800 },
+            { id: 114, name: "Omo Detergent 20g", category: "Detergent", img: "omo.webp", price: 750 },
+            { id: 115, name: "Ariel Powder Box", category: "Detergent", img: "sunlight.webp", price: 950 },
+            { id: 116, name: "Toss Box Sachet", category: "Detergent", img: "ariel.webp", price: 450 },
+            { id: 117, name: "Toss Bucket", category: "Detergent", img: "toss.webp", price: 780 },
+            
+            // --- PASTA & NOODLES ---
+            { id: 118, name: "Taisti Spaghetti", category: "Pasta", img: "taisti.webp", price: 850 },
+            { id: 119, name: "Champion Spaghetti", category: "Pasta", img: "champion.webp", price: 820 },
+            { id: 120, name: "Dynasty Spaghetti", category: "Pasta", img: "dynasty.webp", price: 800 },
+            { id: 121, name: "Indomie Chicken Noodles", category: "Noodles", img: "indomiechicken.webp", price: 500 },
+            { id: 122, name: "Indomie Beef Noodles", category: "Noodles", img: "indomiebeef.webp", price: 500 },
+
+            // --- CANDLES ---
+            { id: 123, name: "Sumo Candle", category: "Candles", img: "candles.webp", price: 140 },
+
+            // --- SANITARIES (BABY DIAPERS) ---
+            { id: 124, name: "Softcare Large (40pcs)", category: "Sanitaries", img: "softcare.webp", price: 550 },
+            { id: 125, name: "Softcare Space HC XL", category: "Sanitaries", img: "softcare.webp", price: 650 },
+            { id: 126, name: "Molfix Highcount Large (40pcs)", category: "Sanitaries", img: "molfix.webp", price: 750 },
+            { id: 127, name: "Molfix Jumbo Large (64pcs)", category: "Sanitaries", img: "molfix.webp", price: 1350 },
+
+            // --- TISSUE ---
+            { id: 128, name: "Neptune Serviettes", category: "Tissue", img: "stock.webp", price: 1040 },
+            { id: 129, name: "Rosy Tissue Bale", category: "Tissue", img: "toiletpaper.webp", price: 1070 },
+            { id: 130, name: "Bella Tissue Bale (40pcs)", category: "Tissue", img: "bella.webp", price: 1020 },
+
+            // --- VASELINE & BABY CARE ---
+            { id: 131, name: "Vaseline 25g Dozen", category: "Vaseline", img: "vaseline.webp", price: 400 },
+            { id: 132, name: "Vaseline 45g Dozen", category: "Vaseline", img: "vaseline.webp", price: 770 },
+            { id: 133, name: "Vaseline 95ml Dozen", category: "Vaseline", img: "vaseline.webp", price: 1140 },
+            { id: 134, name: "Sleeping Baby Lotion 50g", category: "Baby Care", img: "babycare.webp", price: 480 },
+            { id: 135, name: "Sleeping Baby Lotion 100g", category: "Baby Care", img: "babycare.webp", price: 980 },
+
+            // --- CARRIER BAGS ---
+            { id: 136, name: "Carrier Bag #15 (50pcs)", category: "Bags", img: "carrierbag.webp", price: 90 },
+            { id: 137, name: "Carrier Bag #22 (50pcs)", category: "Bags", img: "carrierbag.webp", price: 140 },
+            { id: 138, name: "Carrier Bag #25 (50pcs)", category: "Bags", img: "carrierbag.webp", price: 300 },
+            { id: 139, name: "Carrier Bag #28 (50pcs)", category: "Bags", img: "carrierbag.webp", price: 400 },
+            { id: 140, name: "Packing Net (5000pcs)", category: "Bags", img: "packingnet.webp", price: 5300 },
+            
+            // --- TOOTHPASTE ---
+            { id: 141, name: "Colgate 15ml (12pcs)", category: "Toothpaste", img: "colgate15ml.webp", price: 650 },
+            { id: 142, name: "Colgate 35ml (12pcs)", category: "Toothpaste", img: "colgate.webp", price: 790 },
+            { id: 143, name: "Colgate 70ml (12pcs)", category: "Toothpaste", img: "colgate.webp", price: 1300 },
+
+            // --- SHOE POLISH ---
+            { id: 144, name: "Kiwi Shoe Polish 15ml", category: "Shoe Polish", img: "kiwi.webp", price: 350 },
+            { id: 145, name: "Kiwi Shoe Polish 40ml", category: "Shoe Polish", img: "kiwi.webp", price: 650 },
+            { id: 146, name: "Kiwi Shoe Polish 100ml", category: "Shoe Polish", img: "kiwi.webp", price: 1400 }
+        ];
+
+        // =================== GLOBAL CART ===================
+        let cart = [];
+
+        // =================== RENDER PRODUCTS ===================
+        function renderProducts(data) {
+            const container = document.getElementById('productContainer');
+            container.innerHTML = '';
+
+            // Group by category
+            const categories = {};
+            data.forEach(p => {
+                if (!categories[p.category]) categories[p.category] = [];
+                categories[p.category].push(p);
+            });
+
+            for (const [cat, items] of Object.entries(categories)) {
+                const header = document.createElement('h2');
+                header.className = 'category-header';
+                header.textContent = cat;
+                container.appendChild(header);
+
+                const grid = document.createElement('div');
+                grid.className = 'product-grid';
+
+                items.forEach((p, idx) => {
+                    // Find original index for qty tracking
+                    const originalIndex = products.indexOf(p);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div>
+                            <img src="${p.img}" alt="${p.name}" class="product-img" loading="lazy" decoding="async" width="160" height="160" onerror="this.src='https://placehold.co/300x300/eee/333?text=Image'">
+                            <div class="product-title">${p.name}</div>
+                            <div class="price-wrapper">
+                                <span class="current-price">KSh ${p.price.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <div class="qty-controls">
+                                <button class="qty-btn" onclick="changeQtyShop(${originalIndex}, -1)">−</button>
+                                <span class="qty-display" id="qty-${originalIndex}">1</span>
+                                <button class="qty-btn" onclick="changeQtyShop(${originalIndex}, 1)">+</button>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn-action btn-add-cart" onclick="addToCart(${originalIndex})">Add to Cart</button>
+                                <button class="btn-action btn-order-now" onclick="orderNow(${originalIndex})">Order Now</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                container.appendChild(grid);
+            }
+        }
+
+        // =================== SEARCH ===================
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (query === '') {
+                renderProducts(products);
+                return;
+            }
+            const filtered = products.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                p.category.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
+        }
+
+        // =================== SHOP QUANTITY ===================
+        function changeQtyShop(index, delta) {
+            const display = document.getElementById(`qty-${index}`);
+            if (!display) return;
+            let val = parseInt(display.textContent) + delta;
+            if (val < 1) val = 1;
+            display.textContent = val;
+        }
+
+        function getQtyShop(index) {
+            const display = document.getElementById(`qty-${index}`);
+            return display ? parseInt(display.textContent) : 1;
+        }
+
+        // =================== CART ACTIONS ===================
+        function addToCart(index) {
+            const qty = getQtyShop(index);
+            const p = products[index];
+            const existing = cart.find(item => item.name === p.name);
+            if (existing) {
+                existing.qty += qty;
+            } else {
+                cart.push({ name: p.name, price: p.price, qty: qty });
+            }
+            updateCartUI();
+            alert(`${qty} x ${p.name} added to cart!`);
+        }
+
+        function orderNow(index) {
+            const qty = getQtyShop(index);
+            const p = products[index];
+            const total = p.price * qty;
+            let message = `Hello Kanini Haraka, I would like to order:\n\n`;
+            message += `• ${p.name} x ${qty} = KSh ${total.toLocaleString()}\n`;
+            message += `\nTotal: KSh ${total.toLocaleString()}`;
+            const phone = "0751220969";
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // =================== CART UI ===================
+        function updateCartUI() {
+            const container = document.getElementById('cartItemsContainer');
+            const emptyMsg = document.getElementById('emptyCartMsg');
+            const totalEl = document.getElementById('cartTotalPrice');
+            const countEl = document.getElementById('cart-count');
+            const orderBtn = document.getElementById('orderWhatsAppBtn');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            countEl.textContent = totalItems;
+
+            if (cart.length === 0) {
+                emptyMsg.style.display = 'block';
+                const items = container.querySelectorAll('.cart-item');
+                items.forEach(el => el.remove());
+                totalEl.textContent = 'KSh 0.00';
+                orderBtn.style.display = 'none';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+            orderBtn.style.display = 'block';
+            const items = container.querySelectorAll('.cart-item');
+            items.forEach(el => el.remove());
+
+            let grandTotal = 0;
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.qty;
+                grandTotal += itemTotal;
+
+                const row = document.createElement('div');
+                row.className = 'cart-item';
+                row.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">KSh ${item.price.toLocaleString()}</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="qty-btn-modal" onclick="changeQtyCart(${index}, -1)">−</button>
+                        <span class="qty-display-modal">${item.qty}</span>
+                        <button class="qty-btn-modal" onclick="changeQtyCart(${index}, 1)">+</button>
+                        <span class="item-total">KSh ${itemTotal.toLocaleString()}</span>
+                        <span class="remove-item" onclick="removeItemCart(${index})">🗑</span>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+
+            totalEl.textContent = 'KSh ' + grandTotal.toLocaleString();
+        }
+
+        function changeQtyCart(index, delta) {
+            if (cart[index].qty + delta <= 0) {
+                removeItemCart(index);
+                return;
+            }
+            cart[index].qty += delta;
+            updateCartUI();
+        }
+
+        function removeItemCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function openCart() { document.getElementById('cartModal').style.display = 'flex'; updateCartUI(); }
+        function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
+
+        function orderViaWhatsApp() {
+            if (cart.length === 0) { alert('Your cart is empty!'); return; }
+            let message = "Hello Kanini Haraka, I would like to place an order:\n\n";
+            let total = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.qty;
+                message += `• ${item.name} x ${item.qty} = KSh ${itemTotal.toLocaleString()}\n`;
+                total += itemTotal;
+            });
+            message += `\nTotal: KSh ${total.toLocaleString()}`;
+            const phone = "0751220969";
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // =================== INIT ===================
+        renderProducts(products);
+    </script>
+</body>
+</html>
