@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanini Haraka Enterprises</title>
+    <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <style>
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #ffffff; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* NAVBAR */
+        nav {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-size: 24px; font-weight: 700; color: #b92b27; }
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: #333; font-weight: 500; font-size: 16px; }
+        .nav-links a:hover { color: #b92b27; }
+
+        /* CART BUTTON */
+        .cart-btn { background: transparent; border: none; font-size: 22px; cursor: pointer; color: #333; margin-left: 20px; position: relative; display: flex; align-items: center; }
+        .cart-btn span { background: #b92b27; color: white; font-size: 12px; border-radius: 50%; padding: 2px 6px; position: absolute; top: -8px; right: -12px; }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 90vh;
+            background: url('hero.webp') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding-bottom: 120px;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+            z-index: 1;
+        }
+        .hero h1, .hero p, .hero-btn-container {
+            position: relative;
+            z-index: 2;
+        }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.8);
+            margin-bottom: 15px;
+            max-width: 90%;
+        }
+        .hero p {
+            font-size: 20px;
+            font-weight: 300;
+            text-shadow: 1px 1px 10px rgba(0,0,0,0.8);
+            margin-bottom: 5px;
+        }
+        .hero-btn-container { margin-top: 35px; }
+        .btn-shop-hero {
+            background-color: #ffffff;
+            color: #b92b27;
+            padding: 14px 50px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            display: inline-block;
+        }
+        .btn-shop-hero:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* ABOUT SECTION */
+        .section-padding { padding: 70px 0; }
+        .about-container { display: flex; flex-wrap: wrap; align-items: center; gap: 50px; }
+        .about-text { flex: 1; min-width: 300px; }
+        .about-text h2 { color: #b92b27; font-size: 36px; margin-bottom: 25px; text-align: left; }
+        .about-text p { color: #555; line-height: 1.8; font-size: 16px; margin-bottom: 15px; }
+        .about-image { flex: 1; min-width: 300px; overflow: hidden; position: relative; height: 300px; }
+        
+        /* TRUCK ANIMATION */
+        .truck-wrapper {
+            width: 100%; height: 100%; position: relative;
+            display: flex; align-items: center; justify-content: flex-end; overflow: hidden;
+        }
+        .truck-wrapper img {
+            height: 240px; width: auto; object-fit: contain;
+            animation: slideInTruck 1.8s ease-out forwards;
+            transform: translateX(100%); position: relative; right: -10px;
+        }
+        @keyframes slideInTruck {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(0%); }
+        }
+
+        /* BRANCHES SECTION */
+        .branches-bg { background-color: #f9f9f9; }
+        .section-title { text-align: center; font-size: 36px; color: #b92b27; margin-bottom: 15px; }
+        .section-subtitle { text-align: center; color: #666; font-size: 16px; max-width: 800px; margin: 0 auto 50px auto; line-height: 1.6; }
+        .branch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
+        .branch-card { background: white; padding: 30px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; transition: 0.3s; border: 1px solid #eee; }
+        .branch-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .branch-icon { font-size: 32px; color: #b92b27; margin-bottom: 12px; display: block; }
+        .branch-card h4 { color: #222; font-size: 18px; font-weight: 600; }
+
+        /* TODAY SECTION */
+        .today-bg { background-color: #ebebeb; }
+        .today-content { text-align: center; max-width: 900px; margin: 0 auto; }
+        .today-content h2 { color: #b92b27; font-size: 34px; margin-bottom: 30px; }
+        .today-content p { color: #444; line-height: 1.8; font-size: 16px; margin-bottom: 15px; }
+
+        /* CONTACT SECTION */
+        .contact-wrapper { display: flex; flex-wrap: wrap; gap: 50px; margin-top: 30px; }
+        .contact-left { flex: 1; min-width: 280px; }
+        .contact-left h3 { color: #333; font-size: 22px; margin-bottom: 10px; }
+        .contact-left p { color: #666; line-height: 1.6; margin-bottom: 20px; }
+        .contact-detail { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; color: #444; }
+        .contact-detail i { color: #b92b27; font-size: 20px; width: 24px; text-align: center; }
+        .contact-right { flex: 1.2; min-width: 300px; }
+        .contact-right h3 { color: #333; font-size: 22px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 14px 16px; border: 1px solid #ddd; border-radius: 6px;
+            font-size: 15px; outline: none; transition: 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus { border-color: #b92b27; box-shadow: 0 0 0 3px rgba(185,43,39,0.1); }
+        .form-group textarea { height: 120px; resize: vertical; }
+        .btn-submit { background-color: #b92b27; color: white; border: none; padding: 12px 35px; font-size: 16px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        .btn-submit:hover { background-color: #a02020; }
+
+        /* FLOATING BUTTONS */
+        .float-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
+        .float-btn { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 26px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: 0.3s; }
+        .float-btn:hover { transform: scale(1.08); }
+        .float-whatsapp { background-color: #25D366; }
+        .float-call { background-color: #128C7E; }
+
+        /* FOOTER */
+        footer { background-color: #333333; color: #ccc; text-align: center; padding: 30px 20px; margin-top: 50px; }
+        footer p { font-size: 14px; margin-bottom: 10px; }
+        .footer-links a { color: #4da6ff; text-decoration: none; margin: 0 8px; font-size: 14px; }
+        .footer-links a:hover { text-decoration: underline; }
+
+        /* CART MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 500px; max-height: 85vh; border-radius: 12px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .modal-header h2 { color: #b92b27; font-size: 24px; margin: 0; }
+        .modal-close { background: none; border: none; font-size: 28px; cursor: pointer; color: #888; line-height: 1; }
+        .modal-close:hover { color: #b92b27; }
+        .cart-items { flex: 1; overflow-y: auto; max-height: 50vh; margin-bottom: 15px; }
+        .cart-empty { text-align: center; color: #888; padding: 40px 0; font-size: 16px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f1f1; }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 600; color: #333; font-size: 15px; }
+        .cart-item-price { color: #b92b27; font-weight: bold; font-size: 14px; }
+        .cart-item-controls { display: flex; align-items: center; gap: 12px; }
+        .qty-btn-modal { background: #f1f1f1; border: none; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .qty-btn-modal:hover { background: #ddd; }
+        .qty-display-modal { font-weight: bold; width: 20px; text-align: center; }
+        .item-total { min-width: 60px; text-align: right; font-weight: 600; color: #333; }
+        .remove-item { color: #dc3545; cursor: pointer; font-size: 18px; margin-left: 8px; }
+        .cart-footer { border-top: 2px solid #eee; padding-top: 15px; }
+        .cart-total-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        .cart-total-row span:last-child { color: #b92b27; }
+        .btn-order-whatsapp { width: 100%; background: #25D366; color: white; border: none; padding: 14px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; }
+        .btn-order-whatsapp:hover { background: #1ebe57; }
+
+        @media (max-width: 768px) {
+            .hero { height: 70vh; padding-bottom: 80px; }
+            .hero h1 { font-size: 28px; }
+            .hero p { font-size: 16px; }
+            .nav-links { gap: 15px; }
+            .nav-links a { font-size: 14px; }
+            .cart-btn { margin-left: 10px; }
+            .truck-wrapper img { height: 160px; right: -5px; }
+            .float-container { bottom: 15px; right: 15px; }
+            .float-btn { width: 48px; height: 48px; font-size: 22px; }
+            .modal-content { width: 95%; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo">Kanini Haraka</div>
+        <div style="display: flex; align-items: center;">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#branches">Branches</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="cart-btn" onclick="openCart()">
+                🛒 <span id="cart-count">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>KANINI HARAKA ENTERPRISES LIMITED</h1>
+        <p>Fast, Secure, Reliable & Cost Friendly Wholesale Distribution</p>
+        <div class="hero-btn-container">
+            <a href="shop.html" class="btn-shop-hero">SHOP NOW</a>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="section-padding container">
+        <div class="about-container">
+            <div class="about-text">
+                <h2>About Our Company</h2>
+                <p>In 1995 at a small town of Kwa Haraka in Nyandarua County, Kanini Haraka Enterprises was born. Quality products and services, innovation and trust are the values that Kanini Haraka Enterprises limited was founded on and has endeavored to maintain since then.</p>
+                <p>Kanini Haraka Enterprises ltd has been guided by our vision, mission, goals and our value philosophy to scale through the ever changing economic and business terrain.</p>
+                <p>Under our guiding principles, we have been able to establish a strong vibrant distributorship of fast moving consumer goods at locations most convenient for our customers and by keeping our operating hours flexible and convenient. This is designed in a manner that will not compromise our promise of guaranteed quality of products and services.</p>
+                <p>Kanini Haraka Enterprises Limited is driven to offer quality products and service value to our customers. We have embraced technology as...</p>
+            </div>
+            <div class="about-image">
+                <div class="truck-wrapper">
+                    <img src="truck.webp" alt="Kanini Haraka Delivery Truck" loading="lazy" decoding="async" width="360" height="240">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BRANCHES SECTION -->
+    <section id="branches" class="section-padding branches-bg">
+        <div class="container">
+            <h2 class="section-title">Our Branches</h2>
+            <p class="section-subtitle">
+                From the small village shop in Nyandarua County, Kanini Haraka Enterprises limited has expanded to ten fully fledged operating branches. The branches are:
+            </p>
+            <div class="branch-grid">
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Naivasha Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Nakuru Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Engineer Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Narok Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Meru Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Maua Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Thika Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Nampark Makongeni Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Nyahururu Branch</h4></div>
+                <div class="branch-card"><span class="branch-icon">📍</span><h4>Karatina Branch</h4></div>
+            </div>
+            <div style="margin-top: 50px; text-align: center; max-width: 900px; margin-left: auto; margin-right: auto; color: #444; line-height: 1.8;">
+                <p>Under the guidance and stewardship of our directors James Ndungu Mboi and Serah Wambui Ndungu, Kanini Haraka Enterprises ltd has grown in strength in terms of customer base and turnover growth. This coupled with a qualified senior management team and a dedicated workforce of eight hundred employees, Kanini Haraka Enterprises ltd main strengths are derived from our strong and unified workforces who are the heroes who deliver our promise to the market. They keep our systems, processes and services running.</p>
+                <p style="margin-top: 15px;">Supported by a dynamic and engaged management team, they deliver the benefits that make Kanini Haraka Enterprises limited distributorship a great customer experience.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TODAY SECTION -->
+    <section class="section-padding today-bg">
+        <div class="container today-content">
+            <h2>KANINI HARAKA ENTERPRISES LIMITED TODAY</h2>
+            <p>Kanini Haraka Enterprises limited is rapidly expanding with a view to deliver the best distributorship service anchored on modern technology tools of distributorship. The company is supported by a rapidly expanding distribution infrastructure.</p>
+            <p>The company continues to invest in quality products, customer service, and customer satisfaction and information technology.</p>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="section-padding container">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-wrapper">
+            <div class="contact-left">
+                <h3>Contact Information</h3>
+                <p>Have a question or want to place an order? Contact us through any of the methods below. We look forward to hearing from you!</p>
+                <div class="contact-detail"><i>✉</i> <span>info.kaniniharaka@gmail.com</span></div>
+                <div class="contact-detail"><i>📞</i> <span>0751220969</span></div>
+            </div>
+            <div class="contact-right">
+                <h3>Send us a Message</h3>
+                <form onsubmit="event.preventDefault(); alert('Thank you! Your message has been sent.');">
+                    <div class="form-group"><input type="text" placeholder="Your Name" required></div>
+                    <div class="form-group"><input type="email" placeholder="Your Email" required></div>
+                    <div class="form-group"><textarea placeholder="Your Message" required></textarea></div>
+                    <button type="submit" class="btn-submit">Send Inquiry</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLOATING BUTTONS -->
+    <div class="float-container">
+        <a href="https://wa.me/0751220969" target="_blank" class="float-btn float-whatsapp" title="WhatsApp">💬</a>
+        <a href="tel:0751220969" class="float-btn float-call" title="Call Us">📞</a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Kanini Haraka Enterprises Ltd. All Rights Reserved.</p>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a> | 
+            <a href="#">Terms of Service</a> | 
+            <a href="#">Data Policy</a> | 
+            <a href="#">Data Deletion</a>
+        </div>
+    </footer>
+
+    <!-- CART MODAL -->
+    <div id="cartModal" class="modal-overlay" onclick="if(event.target===this) closeCart()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Your Cart</h2>
+                <button class="modal-close" onclick="closeCart()">×</button>
+            </div>
+            <div id="cartItemsContainer" class="cart-items">
+                <div id="emptyCartMsg" class="cart-empty">Your cart is empty.</div>
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total-row">
+                    <span>Total:</span>
+                    <span id="cartTotalPrice">KSh 0.00</span>
+                </div>
+                <button id="orderWhatsAppBtn" class="btn-order-whatsapp" onclick="orderViaWhatsApp()">Order via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GLOBAL CART STATE
+        let cart = [];
+
+        // --- CART UI FUNCTIONS ---
+        function updateCartUI() {
+            const container = document.getElementById('cartItemsContainer');
+            const emptyMsg = document.getElementById('emptyCartMsg');
+            const totalEl = document.getElementById('cartTotalPrice');
+            const countEl = document.getElementById('cart-count');
+            const orderBtn = document.getElementById('orderWhatsAppBtn');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            countEl.textContent = totalItems;
+
+            if (cart.length === 0) {
+                emptyMsg.style.display = 'block';
+                const items = container.querySelectorAll('.cart-item');
+                items.forEach(el => el.remove());
+                totalEl.textContent = 'KSh 0.00';
+                orderBtn.style.display = 'none';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+            orderBtn.style.display = 'block';
+            const items = container.querySelectorAll('.cart-item');
+            items.forEach(el => el.remove());
+
+            let grandTotal = 0;
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.qty;
+                grandTotal += itemTotal;
+
+                const row = document.createElement('div');
+                row.className = 'cart-item';
+                row.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">KSh ${item.price.toLocaleString()}</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="qty-btn-modal" onclick="changeQty(${index}, -1)">−</button>
+                        <span class="qty-display-modal">${item.qty}</span>
+                        <button class="qty-btn-modal" onclick="changeQty(${index}, 1)">+</button>
+                        <span class="item-total">KSh ${itemTotal.toLocaleString()}</span>
+                        <span class="remove-item" onclick="removeItem(${index})">🗑</span>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+
+            totalEl.textContent = 'KSh ' + grandTotal.toLocaleString();
+        }
+
+        function changeQty(index, delta) {
+            if (cart[index].qty + delta <= 0) {
+                removeItem(index);
+                return;
+            }
+            cart[index].qty += delta;
+            updateCartUI();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function openCart() {
+            document.getElementById('cartModal').style.display = 'flex';
+            updateCartUI();
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function orderViaWhatsApp() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            let message = "Hello Kanini Haraka, I would like to place an order:\n\n";
+            let total = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.qty;
+                message += `• ${item.name} x ${item.qty} = KSh ${itemTotal.toLocaleString()}\n`;
+                total += itemTotal;
+            });
+            message += `\nTotal: KSh ${total.toLocaleString()}`;
+
+            const phone = "0751220969"; 
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+
+</body>
+</html>
