@@ -33,6 +33,10 @@
         .cart-btn { background: transparent; border: none; font-size: 22px; cursor: pointer; color: #333; margin-left: 20px; position: relative; display: flex; align-items: center; }
         .cart-btn span { background: #b92b27; color: white; font-size: 12px; border-radius: 50%; padding: 2px 6px; position: absolute; top: -8px; right: -12px; }
 
+        /* NAV RIGHT / HAMBURGER */
+        .nav-right { display: flex; align-items: center; }
+        .hamburger { display: none; background: transparent; border: none; font-size: 26px; cursor: pointer; color: #333; margin-left: 15px; padding: 4px; line-height: 1; }
+
         /* HERO SECTION */
         .hero {
             position: relative;
@@ -189,17 +193,39 @@
         .btn-order-whatsapp { width: 100%; background: #25D366; color: white; border: none; padding: 14px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; text-align: center; }
         .btn-order-whatsapp:hover { background: #1ebe57; }
 
+        /* FLOATING SHOP NOW BUTTON */
+        .float-shop { background-color: #b92b27; font-size: 22px; }
+        .float-shop-label { display: none; }
+
         @media (max-width: 768px) {
             .hero { height: 70vh; padding-bottom: 80px; }
             .hero h1 { font-size: 28px; }
             .hero p { font-size: 16px; }
-            .nav-links { gap: 15px; }
-            .nav-links a { font-size: 14px; }
             .cart-btn { margin-left: 10px; }
             .truck-wrapper img { height: 160px; right: -5px; }
             .float-container { bottom: 15px; right: 15px; }
             .float-btn { width: 48px; height: 48px; font-size: 22px; }
             .modal-content { width: 95%; padding: 15px; }
+
+            /* HAMBURGER NAV */
+            nav { position: sticky; }
+            .hamburger { display: block; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0;
+                background: #ffffff;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.08);
+                padding: 5px 30px 15px;
+            }
+            .nav-links.active { display: flex; }
+            .nav-links li { width: 100%; }
+            .nav-links a { display: block; padding: 12px 0; font-size: 16px; border-bottom: 1px solid #f1f1f1; }
         }
     </style>
 </head>
@@ -208,8 +234,8 @@
     <!-- NAVBAR -->
     <nav>
         <div class="logo">Kanini Haraka</div>
-        <div style="display: flex; align-items: center;">
-            <ul class="nav-links">
+        <div class="nav-right">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shop.html">Shop</a></li>
                 <li><a href="#about">About Us</a></li>
@@ -219,6 +245,7 @@
             <button class="cart-btn" onclick="openCart()">
                 🛒 <span id="cart-count">0</span>
             </button>
+            <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
         </div>
     </nav>
 
@@ -292,7 +319,7 @@
                 <h3>Contact Information</h3>
                 <p>Have a question or want to place an order? Contact us through any of the methods below. We look forward to hearing from you!</p>
                 <div class="contact-detail"><i>✉</i> <span>info.kaniniharaka@gmail.com</span></div>
-                <div class="contact-detail"><i>📞</i> <span>0751220969</span></div>
+                <div class="contact-detail"><i>📞</i> <span>+254 751 220969</span></div>
             </div>
             <div class="contact-right">
                 <h3>Send us a Message</h3>
@@ -308,8 +335,9 @@
 
     <!-- FLOATING BUTTONS -->
     <div class="float-container">
-        <a href="https://wa.me/0751220969" target="_blank" class="float-btn float-whatsapp" title="WhatsApp">💬</a>
-        <a href="tel:0751220969" class="float-btn float-call" title="Call Us">📞</a>
+        <a href="shop.html" class="float-btn float-shop" title="Shop Now">🛍️</a>
+        <a href="https://wa.me/254751220969" target="_blank" class="float-btn float-whatsapp" title="WhatsApp">💬</a>
+        <a href="tel:+254751220969" class="float-btn float-call" title="Call Us">📞</a>
     </div>
 
     <!-- FOOTER -->
@@ -338,7 +366,7 @@
                     <span>Total:</span>
                     <span id="cartTotalPrice">KSh 0.00</span>
                 </div>
-                <button id="orderWhatsAppBtn" class="btn-order-whatsapp" onclick="orderViaWhatsApp()">Order via WhatsApp</button>
+                <button id="orderWhatsAppBtn" class="btn-order-whatsapp" onclick="orderViaWhatsApp()">Place Order</button>
             </div>
         </div>
     </div>
@@ -346,6 +374,25 @@
     <script>
         // GLOBAL CART STATE
         let cart = [];
+
+        // --- MOBILE NAV TOGGLE ---
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const btn = document.getElementById('hamburgerBtn');
+            const isActive = navLinks.classList.toggle('active');
+            btn.textContent = isActive ? '✕' : '☰';
+        }
+        // Close mobile menu after a link is tapped
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('#navLinks a').forEach(link => {
+                link.addEventListener('click', () => {
+                    const navLinks = document.getElementById('navLinks');
+                    const btn = document.getElementById('hamburgerBtn');
+                    navLinks.classList.remove('active');
+                    btn.textContent = '☰';
+                });
+            });
+        });
 
         // --- CART UI FUNCTIONS ---
         function updateCartUI() {
@@ -436,7 +483,7 @@
             });
             message += `\nTotal: KSh ${total.toLocaleString()}`;
 
-            const phone = "0751220969"; 
+            const phone = "254751220969";
             const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
         }
